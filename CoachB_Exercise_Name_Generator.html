@@ -200,6 +200,11 @@ body{min-height:100vh;}
 <button class="opt-btn" data-field="setup" data-val="Fly" onclick="handleOpt(this)">Fly</button>
 <button class="opt-btn" data-field="setup" data-val="Build Up" onclick="handleOpt(this)">Build Up</button>
 <button class="opt-btn" data-field="setup" data-val="Partner" onclick="handleOpt(this)">Partner</button>
+<button class="opt-btn" data-field="setup" data-val="Small" onclick="handleOpt(this)">Small</button>
+<button class="opt-btn" data-field="setup" data-val="Big" onclick="handleOpt(this)">Big</button>
+<button class="opt-btn" data-field="setup" data-val="Band" onclick="handleOpt(this)">Band</button>
+<button class="opt-btn" data-field="setup" data-val="Chain" onclick="handleOpt(this)">Chain</button>
+
     </div>
     <div class="field-clear" data-clearid="setup" onclick="clearField(this.dataset.clearid)">Clear</div>
   </div>
@@ -345,6 +350,7 @@ body{min-height:100vh;}
 <button class="opt-btn" data-field="pos" data-val="Arms out to side" onclick="handleOpt(this)">Arms out to side</button>
 <button class="opt-btn" data-field="pos" data-val="Arms across chest" onclick="handleOpt(this)">Arms across chest</button>
 <button class="opt-btn" data-field="pos" data-val="Arms Overhead" onclick="handleOpt(this)">Arms Overhead</button>
+<button class="opt-btn" data-field="pos" data-val="Straight Arm" onclick="handleOpt(this)">Straight Arm</button>
     </div>
     <div class="field-clear" data-clearid="pos" onclick="clearField(this.dataset.clearid)">Clear</div>
   </div>
@@ -381,6 +387,7 @@ body{min-height:100vh;}
 <button class="opt-btn" data-field="grip" data-val="Overhead" onclick="handleOpt(this)">Overhead</button>
 <button class="opt-btn" data-field="grip" data-val="Farmer" onclick="handleOpt(this)">Farmer</button>
 <button class="opt-btn" data-field="grip" data-val="Clap" onclick="handleOpt(this)">Clap</button>
+<button class="opt-btn" data-field="grip" data-val="Hammer" onclick="handleOpt(this)">Hammer</button>
     </div>
     <div class="field-clear" data-clearid="grip" onclick="clearField(this.dataset.clearid)">Clear</div>
   </div>
@@ -507,6 +514,7 @@ body{min-height:100vh;}
 <button class="opt-btn" data-field="move" data-val="Leg lower" onclick="handleOpt(this)">Leg lower</button>
 <button class="opt-btn" data-field="move" data-val="Punch" onclick="handleOpt(this)">Punch</button>
 <button class="opt-btn" data-field="move" data-val="Brace" onclick="handleOpt(this)">Brace</button>
+<button class="opt-btn" data-field="move" data-val="Breath" onclick="handleOpt(this)">Breath</button>
 <div class="opt-group-label">Ballistic</div>
 <button class="opt-btn" data-field="move" data-val="Jump" onclick="handleOpt(this)">Jump</button>
 <button class="opt-btn" data-field="move" data-val="Hop" onclick="handleOpt(this)">Hop</button>
@@ -651,6 +659,8 @@ body{min-height:100vh;}
 <button class="opt-btn" data-iso="joint" data-val="Hamstring" onclick="handleIsoJoint(this)">Hamstring</button>
 <button class="opt-btn" data-iso="joint" data-val="Leg" onclick="handleIsoJoint(this)">Leg</button>
 <button class="opt-btn" data-iso="joint" data-val="Foot" onclick="handleIsoJoint(this)">Foot</button>
+<button class="opt-btn" data-iso="joint" data-val="Opposite Arm/Leg" onclick="handleIsoJoint(this)">Opposite Arm/Leg</button>
+<button class="opt-btn" data-iso="joint" data-val="Same Arm/Leg" onclick="handleIsoJoint(this)">Same Arm/Leg</button>
     </div>
     <div class="field-clear" onclick="clearIsoJoint()">Clear</div>
   </div>
@@ -706,7 +716,23 @@ body{min-height:100vh;}
 <button class="opt-btn" data-iso="action" data-val="Snow Angel" onclick="handleIsoAction(this)">Snow Angel</button>
 <button class="opt-btn" data-iso="action" data-val="Clamshell" onclick="handleIsoAction(this)">Clamshell</button>
     </div>
-    <div class="field-clear" onclick="clearIsoAction()">Clear</div>
+    <button class="opt-btn" data-iso="action" data-val="Punch" onclick="handleIsoAction(this)">Punch</button>
+<button class="opt-btn" data-iso="action" data-val="Crunch" onclick="handleIsoAction(this)">Crunch</button>
+<button class="opt-btn" data-iso="action" data-val="Twist" onclick="handleIsoAction(this)">Twist</button>
+<button class="opt-btn" data-iso="action" data-val="Reach" onclick="handleIsoAction(this)">Reach</button>
+<button class="opt-btn" data-iso="action" data-val="Bend" onclick="handleIsoAction(this)">Bend</button>
+<button class="opt-btn" data-iso="action" data-val="Push-up" onclick="handleIsoAction(this)">Push-up</button>
+<button class="opt-btn" data-iso="action" data-val="IR/ER" onclick="handleIsoAction(this)">IR/ER</button>
+<button class="opt-btn" data-iso="action" data-val="Dead Bug" onclick="handleIsoAction(this)">Dead Bug</button>
+<button class="opt-btn" data-iso="action" data-val="Bridge" onclick="handleIsoAction(this)">Bridge</button>
+<button class="opt-btn" data-iso="action" data-val="Plank" onclick="handleIsoAction(this)">Plank</button>
+<button class="opt-btn" data-iso="action" data-val="Cobra" onclick="handleIsoAction(this)">Cobra</button>
+<button class="opt-btn" data-iso="action" data-val="Superdog" onclick="handleIsoAction(this)">Superdog</button>
+<button class="opt-btn" data-iso="action" data-val="Superman" onclick="handleIsoAction(this)">Superman</button>
+<button class="opt-btn" data-iso="action" data-val="Sailorman" onclick="handleIsoAction(this)">Sailorman</button>
+<button class="opt-btn" data-iso="action" data-val="Upward Dog" onclick="handleIsoAction(this)">Upward Dog</button>
+<button class="opt-btn" data-iso="action" data-val="Downward Dog" onclick="handleIsoAction(this)">Downward Dog</button>
+<div class="field-clear" onclick="clearIsoAction()">Clear</div>
   </div>
 
 </div>
