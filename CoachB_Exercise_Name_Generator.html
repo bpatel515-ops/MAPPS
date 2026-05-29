@@ -47,7 +47,7 @@ body{min-height:100vh;}
 .video-header{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--navy);}
 .video-label{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.5);}
 .video-clear-btn{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.7);font-family:'DM Sans',sans-serif;font-size:10px;font-weight:700;padding:4px 10px;border-radius:20px;cursor:pointer;}
-.video-frame-wrap{position:relative;padding-bottom:56.25%;background:#000;}
+.video-frame-wrap{position:relative;padding-bottom:min(56.25%,380px);background:#000;max-height:380px;}
 .video-frame-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:none;}
 .no-video{display:none;flex-direction:column;align-items:center;justify-content:center;padding:28px 20px;background:var(--bg);gap:6px;}
 .no-video-text{font-size:12px;color:var(--muted);text-align:center;}
@@ -111,7 +111,8 @@ body{min-height:100vh;}
   .output-wrap{padding-bottom:20px;}
   .fields{padding-bottom:100px;}
   .save-bar{padding:12px 32px;}
-  .video-wrap{margin:12px 32px 0;}
+  .video-wrap{margin:12px 32px 0;max-width:640px;}
+  .cues-wrap{margin:8px 32px 0;max-width:640px;}
   .opt-grid,.iso-opt-grid{grid-template-columns:repeat(3,1fr);}
 }
 @media(min-width:900px){
@@ -200,19 +201,6 @@ body{min-height:100vh;}
   </div>
 </div>
 
-<div class="video-wrap" id="video-container">
-  <div class="video-header">
-    <span class="video-label" id="video-match"></span>
-    <button class="video-clear-btn" onclick="clearVideo()">&#10005; Clear</button>
-  </div>
-  <div class="video-frame-wrap">
-    <iframe id="video-frame" src="" allowfullscreen></iframe>
-  </div>
-  <div class="no-video" id="no-video">
-    <div class="no-video-text">No demo video found for this exercise</div>
-  </div>
-</div>
-
 <div class="cues-wrap" id="cues-container" style="display:none;">
   <div class="cues-header">
     <span class="cues-label">&#127919; Coaching Cues</span>
@@ -228,6 +216,19 @@ body{min-height:100vh;}
       Could not generate cues for this exercise.
     </div>
   </div>
+
+<div class="video-wrap" id="video-container">
+  <div class="video-header">
+    <span class="video-label" id="video-match"></span>
+    <button class="video-clear-btn" onclick="clearVideo()">&#10005; Clear</button>
+  </div>
+  <div class="video-frame-wrap">
+    <iframe id="video-frame" src="" allowfullscreen></iframe>
+  </div>
+  <div class="no-video" id="no-video">
+    <div class="no-video-text">No demo video found for this exercise</div>
+  </div>
+</div>
 </div>
 
 <div class="fields">
@@ -1742,6 +1743,7 @@ function clearCmb() {
 
 
 function clearAll() {
+  lastCueName = '';
   FIELD_IDS.forEach(function(id) {
     state[id] = '';
     var card = document.getElementById('card-' + id);
