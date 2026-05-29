@@ -43,7 +43,7 @@ body{min-height:100vh;}
 .tk8{background:#E8F0FE;color:#1A3A8F;border:1px solid #C5D5F8;}
 .tk9{background:#EBEBEB;color:#4A4A4A;border:1px solid #CCCCCC;}
 /* VIDEO */
-.video-wrap{margin:12px 20px 0;border-radius:12px;overflow:hidden;display:none;box-shadow:0 4px 16px rgba(14,27,43,.15);}
+.video-wrap{margin:12px 0 0;border-radius:12px;overflow:hidden;display:none;box-shadow:0 4px 16px rgba(14,27,43,.15);}
 .video-header{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--navy);}
 .video-label{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.5);}
 .video-clear-btn{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.7);font-family:'DM Sans',sans-serif;font-size:10px;font-weight:700;padding:4px 10px;border-radius:20px;cursor:pointer;}
@@ -111,8 +111,8 @@ body{min-height:100vh;}
   .output-wrap{padding-bottom:20px;}
   .fields{padding-bottom:100px;}
   .save-bar{padding:12px 32px;}
-  .video-wrap{margin:12px 32px 0;max-width:640px;}
-  .cues-wrap{margin:8px 32px 0;max-width:640px;}
+  .video-wrap{margin:12px 0 0;}
+  .cues-wrap{margin:8px 0 0;}
   .opt-grid,.iso-opt-grid{grid-template-columns:repeat(3,1fr);}
 }
 @media(min-width:900px){
@@ -137,7 +137,7 @@ body{min-height:100vh;}
 
 /* Coaching Cues Panel */
 .cues-wrap{
-  margin:8px 20px 0;border-radius:12px;overflow:hidden;
+  margin:8px 0 0;border-radius:12px;overflow:hidden;
   border:1.5px solid var(--rule);background:var(--white);
   box-shadow:0 4px 16px rgba(14,27,43,.08);
 }
@@ -179,6 +179,16 @@ body{min-height:100vh;}
 @media(min-width:640px){
   .cues-wrap{margin:8px 32px 0;}
 }
+
+/* Media centering wrapper */
+.media-center{
+  max-width:680px;
+  margin:0 auto;
+  padding:0 20px;
+}
+@media(min-width:640px){
+  .media-center{padding:0 32px;}
+}
 </style>
 </head>
 <body>
@@ -201,6 +211,7 @@ body{min-height:100vh;}
   </div>
 </div>
 
+<div class="media-center">
 <div class="cues-wrap" id="cues-container" style="display:none;">
   <div class="cues-header">
     <span class="cues-label">&#127919; Coaching Cues</span>
@@ -228,6 +239,7 @@ body{min-height:100vh;}
   <div class="no-video" id="no-video">
     <div class="no-video-text">No demo video found for this exercise</div>
   </div>
+</div>
 </div>
 </div>
 
