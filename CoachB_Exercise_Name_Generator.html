@@ -133,6 +133,51 @@ body{min-height:100vh;}
 .iso-joint-open [data-cardid="iso-joint"] .field-chevron { transform: rotate(180deg); }
 .iso-action-open [data-cardid="iso-action"] .field-chevron { transform: rotate(180deg); }
 
+
+/* Coaching Cues Panel */
+.cues-wrap{
+  margin:8px 20px 0;border-radius:12px;overflow:hidden;
+  border:1.5px solid var(--rule);background:var(--white);
+  box-shadow:0 4px 16px rgba(14,27,43,.08);
+}
+.cues-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 16px;background:var(--navy);
+}
+.cues-label{
+  font-size:11px;font-weight:700;letter-spacing:.12em;
+  text-transform:uppercase;color:rgba(255,255,255,.8);
+}
+.cues-model{
+  font-size:10px;color:rgba(255,255,255,.35);
+  letter-spacing:.06em;font-style:italic;
+}
+.cues-body{padding:14px 16px;}
+.cues-loading{
+  display:flex;align-items:center;gap:10px;
+  font-size:12px;color:var(--muted);font-style:italic;
+}
+.cues-spinner{
+  width:16px;height:16px;border-radius:50%;flex-shrink:0;
+  border:2px solid var(--rule);border-top-color:var(--navy);
+  animation:spin .7s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg);}}
+.cues-list{display:flex;flex-direction:column;gap:8px;}
+.cue-item{
+  display:flex;align-items:flex-start;gap:10px;
+  padding:9px 12px;border-radius:8px;
+  background:var(--bg);border-left:3px solid var(--navy);
+}
+.cue-num{
+  font-family:'Playfair Display',serif;font-size:14px;font-weight:900;
+  color:var(--navy);line-height:1.2;flex-shrink:0;min-width:18px;
+}
+.cue-text{font-size:13px;color:var(--ink);line-height:1.5;}
+.cues-error{font-size:12px;color:var(--muted);font-style:italic;}
+@media(min-width:640px){
+  .cues-wrap{margin:8px 32px 0;}
+}
 </style>
 </head>
 <body>
@@ -165,6 +210,23 @@ body{min-height:100vh;}
   </div>
   <div class="no-video" id="no-video">
     <div class="no-video-text">No demo video found for this exercise</div>
+  </div>
+</div>
+
+<div class="cues-wrap" id="cues-container" style="display:none;">
+  <div class="cues-header">
+    <span class="cues-label">&#127919; Coaching Cues</span>
+    <span class="cues-model">Coach B Patel &middot; M.A.P.P.S.</span>
+  </div>
+  <div class="cues-body" id="cues-body">
+    <div class="cues-loading" id="cues-loading">
+      <div class="cues-spinner"></div>
+      <span>Generating cues&hellip;</span>
+    </div>
+    <div class="cues-list" id="cues-list" style="display:none;"></div>
+    <div class="cues-error" id="cues-error" style="display:none;">
+      Could not generate cues for this exercise.
+    </div>
   </div>
 </div>
 
@@ -1738,6 +1800,7 @@ function render() {
     return '<span class="token ' + t.cls + '">' + t.text + '</span>';
   }).join('');
   updateVideo(name);
+  triggerCues(name);
 }
 
 // ── Video ─────────────────────────────────────────────────────────
@@ -1786,6 +1849,7 @@ function updateVideo(name) {
   }
 }
 function clearVideo() {
+  lastCueName = ''; document.getElementById('cues-container').style.display='none';
   document.getElementById('video-container').style.display = 'none';
   document.getElementById('video-frame').src = '';
   document.getElementById('video-match').textContent = '';
@@ -1894,6 +1958,124 @@ function updateIsoPreview() {
   // No longer needed for a single preview — each sub-header has its own
 }
 
+
+// ── Coaching Cues via Claude API ──────────────────────────────────
+var LOWER_BODY_KEYWORDS = [
+  'squat','lunge','deadlift','rdl','sldl','hip thrust','hip hinge','hip bridge',
+  'glute bridge','step up','leg curl','ghr','nordic','bound','hop','jump',
+  'heiden','calf','split squat','good morning','swing','clean','snatch',
+  'stride','locomotion','crawl','sprint','run','shuffle','skip','carioca'
+];
+
+var LOWER_BODY_MUSCLES = [
+  'quad','glute','hamstring','calf','hip','adductor','groin','knee',
+  'tibialis','ankle','leg','foot','soleus','gastroc'
+];
+
+function isLowerBody(exerciseName, isoJointVal) {
+  var n = exerciseName.toLowerCase();
+  var j = (isoJointVal || '').toLowerCase();
+  for (var i=0;i<LOWER_BODY_KEYWORDS.length;i++) {
+    if (n.indexOf(LOWER_BODY_KEYWORDS[i]) !== -1) return true;
+  }
+  for (var k=0;k<LOWER_BODY_MUSCLES.length;k++) {
+    if (j.indexOf(LOWER_BODY_MUSCLES[k]) !== -1) return true;
+  }
+  return false;
+}
+
+var cueTimeout = null;
+var lastCueName = '';
+
+function triggerCues(exerciseName) {
+  if (!exerciseName || exerciseName === 'Select a movement to begin') {
+    document.getElementById('cues-container').style.display = 'none';
+    return;
+  }
+  // Debounce — wait 800ms after last change before calling API
+  clearTimeout(cueTimeout);
+  cueTimeout = setTimeout(function() {
+    fetchCues(exerciseName);
+  }, 800);
+}
+
+function fetchCues(exerciseName) {
+  if (exerciseName === lastCueName) return;
+  lastCueName = exerciseName;
+
+  var container  = document.getElementById('cues-container');
+  var loading    = document.getElementById('cues-loading');
+  var list       = document.getElementById('cues-list');
+  var errorEl    = document.getElementById('cues-error');
+
+  container.style.display = 'block';
+  loading.style.display   = 'flex';
+  list.style.display      = 'none';
+  errorEl.style.display   = 'none';
+  list.innerHTML = '';
+
+  // Build context from current field state
+  var fieldContext = [];
+  FIELD_IDS.forEach(function(id) {
+    if (state[id]) fieldContext.push(id + ': ' + state[id]);
+  });
+  if (cmbVal)    fieldContext.push('combination: ' + cmbVal);
+  if (isoJoint)  fieldContext.push('joint/muscle: ' + isoJoint);
+  if (isoAction) fieldContext.push('action: ' + isoAction);
+
+  var lowerBody = isLowerBody(exerciseName, isoJoint);
+
+  var systemPrompt = "You are Coach B Patel, a strength and conditioning and movement performance specialist with expertise in athletic development, rehabilitation, and movement quality. " +
+    "Generate exactly 4 concise coaching cues for the exercise provided. " +
+    "Rules: " +
+    (lowerBody ?
+      "This is a lower body exercise. ALWAYS cue mid-foot pressure — never heel pressure. Mid-foot contact keeps athletes in athletic position and transfers directly to sport. " :
+      "") +
+    "Each cue should be one sentence, direct, and actionable — written as if you are coaching an athlete in real time. " +
+    "Cover setup/position, bracing/core, the primary movement mechanic, and one performance or safety point. " +
+    "Do not number the cues. Do not use bullet points. Return only the 4 cues separated by newlines. No preamble, no explanation.";
+
+  var userPrompt = "Exercise: " + exerciseName + "\nContext: " + fieldContext.join(", ");
+
+  fetch("https://api.anthropic.com/v1/messages", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({
+      model: "claude-sonnet-4-20250514",
+      max_tokens: 1000,
+      system: systemPrompt,
+      messages: [{ role: "user", content: userPrompt }]
+    })
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    var text = '';
+    if (data.content) {
+      data.content.forEach(function(block) {
+        if (block.type === 'text') text += block.text;
+      });
+    }
+    if (!text) throw new Error('No content');
+
+    var cues = text.split('\n').map(function(c) { return c.trim(); })
+                   .filter(function(c) { return c.length > 0; })
+                   .slice(0, 4);
+
+    loading.style.display = 'none';
+    list.style.display    = 'flex';
+    list.innerHTML = cues.map(function(cue, i) {
+      var safe = cue.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+      return '<div class="cue-item">' +
+        '<span class="cue-num">' + (i+1) + '</span>' +
+        '<span class="cue-text">' + safe + '</span>' +
+        '</div>';
+    }).join('');
+  })
+  .catch(function() {
+    loading.style.display = 'none';
+    errorEl.style.display = 'block';
+  });
+}
 </script>
 </body>
 </html>
